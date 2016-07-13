@@ -75,7 +75,7 @@ public class Board {
 		{
 			for (int j = 0; j < width; j++)
 			{
-				if (bombs[i][j] == false)
+				if (!bombs[i][j])
 				{
 					playingBoard[i][j] = new Cell(getBombsNearCell(i,j));
 				}
@@ -85,17 +85,17 @@ public class Board {
 	public void setBoardDifficulty(String difficulty)
 	{
 		this.difficulty = difficulty;
-		if (this.difficulty == "Easy")
+		if (this.difficulty.equals("Easy"))
 		{
 			this.width = 20;
 			this.height = 20;
 		}
-		else if (this.difficulty == "Medium")
+		else if (this.difficulty.equals("Medium"))
 		{
 			this.width = 50;
 			this.height = 50;
 		}
-		else if (this.difficulty == "Hard")
+		else if (this.difficulty.equals("Hard"))
 		{
 			this.width = 100;
 			this.height = 100;
