@@ -11,18 +11,22 @@ public class Board {
 		difficulty = "Test";
 		playingBoard = new Cell [height][width];
 		setBoard();
-		game = new GUI();
+		game = new GUI("Test");
 		game.addButons(5, 5);
 		game.setVisible(true);
 	}
 	public Board(String difficulty)
 	{
-		game = new GUI();
+		game = new GUI(difficulty);
 		setBoardDifficulty(difficulty,game);
 		playingBoard = new Cell [height][width];
 		setBoard();
 		game.addButons(width,height);
 		game.setVisible(true);
+	}
+	public String getDifficulty()
+	{
+		return this.difficulty;
 	}
 	public int getBombCount()
 	{
