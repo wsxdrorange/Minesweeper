@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -18,11 +19,9 @@ public class GUI extends JFrame implements ActionListener{
 	{
 		super("Minesweeper by Rick");
 		setSize(600,600);
-		setVisible(true);
-		setResizable(false);
+		setResizable(true);
 		createJMenuBar();
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		addButtons();
 		setLocationRelativeTo(null);
 	}
 	public void createJMenuBar()
@@ -52,17 +51,32 @@ public class GUI extends JFrame implements ActionListener{
 		game.add(exit);
 		exit.addActionListener(this);
 	}
-	public void addButtons()
+	public void addButons(int width, int height)
 	{
 		JPanel panel1 = new JPanel();
+		
+		//Restart Button
 		ImageIcon smiley = new ImageIcon(this.getClass().getResource("Images/smileyFace.jpg"));
 		JButton smileyRestart = new JButton(smiley);
-		smileyRestart.setBounds(300,100,100,50);
-		panel1.setBounds(50, 50, 300, 300);
-		panel1.setLayout(null);
-		panel1.add(smileyRestart);
-		panel1.setVisible(true);
+		smileyRestart.setBounds(250,20,91,91);
+		smileyRestart.setBackground(Color.WHITE);
+		
+		panel1.add(smileyRestart,BorderLayout.CENTER);
 		add(panel1);
+		
+		JPanel panel2 = new JPanel(new GridLayout(width,height));
+		//Make Board
+		JButton Butons[][] = new JButton[height][width];
+		for (int i = 0; i < Butons.length; i++)
+		{
+			for (int j = 0; j < Butons[0].length; j++)
+			{
+				Butons[i][j] = new JButton("");
+				Butons[i][j].addActionListener(this);
+				panel2.add(Butons[i][j]);
+			}
+		}
+		add(panel2);
 	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
