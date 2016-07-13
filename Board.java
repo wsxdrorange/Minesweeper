@@ -3,6 +3,7 @@ public class Board {
 	private int width;
 	private int height;
 	Cell [][] playingBoard;
+	GUI game;
 	public Board()
 	{
 		width = 5;
@@ -10,12 +11,18 @@ public class Board {
 		difficulty = "Test";
 		playingBoard = new Cell [height][width];
 		setBoard();
+		game = new GUI();
+		game.addButons(5, 5);
+		game.setVisible(true);
 	}
 	public Board(String difficulty)
 	{
-		setBoardDifficulty(difficulty);
+		game = new GUI();
+		setBoardDifficulty(difficulty,game);
 		playingBoard = new Cell [height][width];
 		setBoard();
+		game.addButons(width,height);
+		game.setVisible(true);
 	}
 	public int getBombCount()
 	{
@@ -82,23 +89,26 @@ public class Board {
 			}
 		}
 	}
-	public void setBoardDifficulty(String difficulty)
+	public void setBoardDifficulty(String difficulty, GUI game)
 	{
 		this.difficulty = difficulty;
 		if (this.difficulty.equals("Easy"))
 		{
 			this.width = 20;
 			this.height = 20;
+			//Set GUI size
 		}
 		else if (this.difficulty.equals("Medium"))
 		{
 			this.width = 50;
 			this.height = 50;
+			//Set GUI size
 		}
 		else if (this.difficulty.equals("Hard"))
 		{
 			this.width = 100;
 			this.height = 100;
+			//Set GUI size
 		}
 	}
 	public void displayBoard()
