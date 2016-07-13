@@ -15,9 +15,11 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 public class GUI extends JFrame implements ActionListener{
-	public GUI()
+	private String difficulty;
+	public GUI(String difficulty)
 	{
 		super("Minesweeper by Rick");
+		this.difficulty = difficulty;
 		setSize(600,600);
 		setResizable(true);
 		createJMenuBar();
@@ -50,6 +52,10 @@ public class GUI extends JFrame implements ActionListener{
 		game.addSeparator();
 		game.add(exit);
 		exit.addActionListener(this);
+		easy.addActionListener(this);
+		medium.addActionListener(this);
+		hard.addActionListener(this);
+		reset.addActionListener(this);
 	}
 	public void addButons(int width, int height)
 	{
@@ -71,7 +77,7 @@ public class GUI extends JFrame implements ActionListener{
 		{
 			for (int j = 0; j < Butons[0].length; j++)
 			{
-				Butons[i][j] = new JButton("");
+				Butons[i][j] = new JButton();
 				Butons[i][j].addActionListener(this);
 				panel2.add(Butons[i][j]);
 			}
@@ -84,6 +90,34 @@ public class GUI extends JFrame implements ActionListener{
 		if (arg0.getActionCommand().equals("Exit"))
 		{
 			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+		}
+		else if (arg0.getActionCommand().equals("Easy"))
+		{
+			setDefaultCloseOperation(HIDE_ON_CLOSE);
+			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+			Board test = new Board("Easy");
+			setDefaultCloseOperation(3);
+		}
+		else if (arg0.getActionCommand().equals("Medium"))
+		{
+			setDefaultCloseOperation(HIDE_ON_CLOSE);
+			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+			Board test = new Board("Medium");
+			setDefaultCloseOperation(3);
+		}
+		else if (arg0.getActionCommand().equals("Hard"))
+		{
+			setDefaultCloseOperation(HIDE_ON_CLOSE);
+			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+			Board test = new Board("Hard");
+			setDefaultCloseOperation(3);
+		}
+		else if (arg0.getActionCommand().equals("Reset"))
+		{
+			setDefaultCloseOperation(HIDE_ON_CLOSE);
+			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+			Board test = new Board(this.difficulty);
+			setDefaultCloseOperation(3);
 		}
 	}
 }
