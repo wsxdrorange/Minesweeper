@@ -1,165 +1,172 @@
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
-
-public class GUI extends JFrame implements ActionListener{
+public class Board {
 	private String difficulty;
-	private int BOARD_HEIGHT;
-	private int BOARD_WIDTH;
-	Cell playingBoard [][];
-	JButton Butons [][];
-	public GUI(String difficulty)
-	{
-		super("Minesweeper by Rick");
-		this.difficulty = difficulty;
-		setSize(600,600);
-		setResizable(true);
-		createJMenuBar();
-		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
+	private int width;
+	private int height;
+	Cell[][] playingBoard;
+	boolean[][] checked;
+	GUI game;
+	private int bombs;
+
+	public Board() {
+		width = 5;
+		height = 5;
+		difficulty = "Test";
+		playingBoard = new Cell[height][width];
+		checked = new boolean[height][width];
+		setBoard();
+		game = new GUI("Test");
+		game.createCheckedBoard(this.checked);
+		game.addButons(5, 5);
+		game.createBombCount(this.bombs);
+		game.createPlayingBoard(playingBoard);
+		game.setVisible(true);
 	}
-	public void createPlayingBoard(Cell[][] playingBoard)
-	{
-		this.playingBoard = playingBoard;
+
+	public Board(String difficulty) {
+		game = new GUI(difficulty);
+		setBoardDifficulty(difficulty);
+		playingBoard = new Cell[height][width];
+		checked = new boolean[height][width];
+		setBoard();
+		game.createCheckedBoard(this.checked);
+		game.addButons(width, height);
+		game.createPlayingBoard(playingBoard);
+		game.setVisible(true);
 	}
-	public void createJMenuBar()
-	{
-		//Display JMenu
-		JMenuBar bar = new JMenuBar();
-		setJMenuBar(bar);
-		
-		//Game Menu
-		JMenu game = new JMenu("Game");
-		
-		//Difficulty Submenu
-		JMenu difficulty = new JMenu("Difficulty");
-		JMenuItem easy = new JMenuItem("Easy");
-		JMenuItem medium = new JMenuItem("Medium");
-		JMenuItem hard = new JMenuItem("Hard");
-		
-		//Other Menu Items
-		JMenuItem reset = new JMenuItem("Reset");
-		JMenuItem exit = new JMenuItem("Exit");
-		
-		//Adding bars
-		bar.add(game);
-		
-		//Difficulties
-		game.add(difficulty);
-		difficulty.add(easy);
-		difficulty.add(medium);
-		difficulty.add(hard);
-		
-		game.addSeparator();
-		game.add(reset);
-		game.addSeparator();
-		game.add(exit);
-		
-		//ActionListeners
-		exit.addActionListener(this);
-		easy.addActionListener(this);
-		medium.addActionListener(this);
-		hard.addActionListener(this);
-		reset.addActionListener(this);
+
+	public String getDifficulty() {
+		return this.difficulty;
 	}
-	public void addButons(int width, int height)
-	{
-		this.BOARD_WIDTH = width;
-		this.BOARD_HEIGHT = height;
-		
-		//Main Panel - holds all other panels
-		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-		
-		//Restart Button - Panel 1
-		JPanel panel1 = new JPanel();
-		ImageIcon smiley = new ImageIcon(this.getClass().getResource("Images/smileyFaceSmaller.png"));
-		JButton smileyRestart = new JButton(smiley);
-		smileyRestart.addActionListener(this);
-		smileyRestart.setActionCommand("SmileyRestart");
-		panel1.setLayout(new BoxLayout(panel1,BoxLayout.X_AXIS));
-		panel1.add(smileyRestart);
-		mainPanel.add(panel1);
-		
-		//Make Board - Panel 2
-		JPanel panel2 = new JPanel(new GridLayout(width,height));
-		Butons = new JButton[height][width];
-		for (int i = 0; i < Butons.length; i++)
-		{
-			for (int j = 0; j < Butons[0].length; j++)
-			{
-				Butons[i][j] = new JButton();
-				Butons[i][j].addActionListener(this);
-				panel2.add(Butons[i][j]);
+	public int getBombCount() {
+		if (this.difficulty.equals("Test")) {
+			return 6;
+		}
+		if (this.difficulty.equals("Easy")) {
+			return 10;
+		} else if (this.difficulty.equals("Medium")) {
+			return 40;
+		} else if (this.difficulty.equals("Hard")) {
+			return 99;
+		} else {
+			return 0;
+		}
+	}
+
+	public void setBoard() {
+		//SETS BOMBS
+		boolean[][] bombs = new boolean[height][width];
+		int count = 0;
+		int y;
+		int x;
+		this.bombs = getBombCount();
+		while (count < this.bombs) {
+			y = (int) Math.floor(Math.random() * (height));
+			x = (int) Math.floor(Math.random() * (width));
+			if (!bombs[y][x] ) {
+				bombs[y][x] = true;
+				playingBoard[y][x] = new Cell(true);
+				count++;
 			}
 		}
-		mainPanel.add(panel2);
-		
-		//Add mainPanel to JFrame
-		add(mainPanel);
-	}
-	public JButton[][] getGUIBoard()
-	{
-		return this.Butons;
-	}
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		for (int i = 0; i < BOARD_HEIGHT; i++)
-		{
-			for (int j = 0; j < BOARD_WIDTH; j++)
-			{
-				if (arg0.getSource().equals(Butons[i][j]))
-				{
-					Butons[i][j].removeActionListener(this);
-					Butons[i][j].setText(playingBoard[i][j].toString());
+		//Avoids null by presetting all values to 9
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				if (!bombs[i][j]) {
+					playingBoard[i][j] = new Cell(9);
 				}
 			}
 		}
-		if (arg0.getActionCommand().equals("Exit"))
-		{
-			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+		//SETS NUMBERS
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				if (!bombs[i][j]) {
+					playingBoard[i][j] = new Cell(getBombsNearCell(i, j));
+				}
+			}
 		}
-		else if (arg0.getActionCommand().equals("Easy"))
-		{
-			setDefaultCloseOperation(HIDE_ON_CLOSE);
-			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-			Board test = new Board("Easy");
-			setDefaultCloseOperation(3);
+		this.checked = bombs;
+	}
+
+	public void setBoardDifficulty(String difficulty) {
+		this.difficulty = difficulty;
+		if (this.difficulty.equals("Test")) {
+			this.width = 5;
+			this.height = 5;
 		}
-		else if (arg0.getActionCommand().equals("Medium"))
-		{
-			setDefaultCloseOperation(HIDE_ON_CLOSE);
-			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-			Board test = new Board("Medium");
-			setDefaultCloseOperation(3);
+		if (this.difficulty.equals("Easy")) {
+			this.width = 9;
+			this.height = 9;
+			//Set GUI size
+		} else if (this.difficulty.equals("Medium")) {
+			this.width = 16;
+			this.height = 16;
+			//Set GUI size
+		} else if (this.difficulty.equals("Hard")) {
+			this.width = 16;
+			this.height = 30;
+			//Set GUI size
 		}
-		else if (arg0.getActionCommand().equals("Hard"))
-		{
-			setDefaultCloseOperation(HIDE_ON_CLOSE);
-			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-			Board test = new Board("Hard");
-			setDefaultCloseOperation(3);
+	}
+
+	public void displayBoard() {
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				System.out.print(playingBoard[i][j].toString() + " ");
+			}
+			System.out.println();
 		}
-		else if (arg0.getActionCommand().equals("Reset") || arg0.getActionCommand().equals("SmileyRestart"))
-		{
-			setDefaultCloseOperation(HIDE_ON_CLOSE);
-			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-			Board test = new Board(this.difficulty);
-			setDefaultCloseOperation(3);
+	}
+
+	public int getBombsNearCell(int i, int j) {
+		int bombsNear = 0;
+		//Check Up
+		if (i - 1 >= 0) {
+			if (playingBoard[i - 1][j].isBomb()) {
+				bombsNear++;
+			}
 		}
+		//Check Down
+		if (i + 1 < height) {
+			if (playingBoard[i + 1][j].isBomb()) {
+				bombsNear++;
+			}
+		}
+		//Check Left
+		if (j - 1 >= 0) {
+			if (playingBoard[i][j - 1].isBomb()) {
+				bombsNear++;
+			}
+		}
+		//Check Right
+		if (j + 1 < width) {
+			if (playingBoard[i][j + 1].isBomb()) {
+				bombsNear++;
+			}
+		}
+		//Check UpRight
+		if (j + 1 < width && i - 1 >= 0) {
+			if (playingBoard[i - 1][j + 1].isBomb()) {
+				bombsNear++;
+			}
+		}
+		//Check UpLeft
+		if (j - 1 >= 0 && i - 1 >= 0) {
+			if (playingBoard[i - 1][j - 1].isBomb()) {
+				bombsNear++;
+			}
+		}
+		//Check DownLeft
+		if (j - 1 >= 0 && i + 1 < height) {
+			if (playingBoard[i + 1][j - 1].isBomb()) {
+				bombsNear++;
+			}
+		}
+		//Check DownRight
+		if (j + 1 < width && i + 1 < height) {
+			if (playingBoard[i + 1][j + 1].isBomb()) {
+				bombsNear++;
+			}
+		}
+		return bombsNear;
 	}
 }
