@@ -1,8 +1,9 @@
-public class Board {
+public class Board{
 	private String difficulty;
 	private int width;
 	private int height;
 	Cell [][] playingBoard;
+	boolean [][] checked;
 	GUI game;
 	public Board()
 	{
@@ -10,9 +11,11 @@ public class Board {
 		height = 5;
 		difficulty = "Test";
 		playingBoard = new Cell [height][width];
+		checked = new boolean[height][width];
 		setBoard();
 		game = new GUI("Test");
 		game.addButons(5, 5);
+		game.createPlayingBoard(playingBoard);
 		game.setVisible(true);
 	}
 	public Board(String difficulty)
@@ -20,8 +23,10 @@ public class Board {
 		game = new GUI(difficulty);
 		setBoardDifficulty(difficulty,game);
 		playingBoard = new Cell [height][width];
+		checked = new boolean [height][width];
 		setBoard();
 		game.addButons(width,height);
+		game.createPlayingBoard(playingBoard);
 		game.setVisible(true);
 	}
 	public String getDifficulty()
