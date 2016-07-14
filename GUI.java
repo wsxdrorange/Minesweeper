@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -31,26 +32,35 @@ public class GUI extends JFrame implements ActionListener{
 		//Display JMenu
 		JMenuBar bar = new JMenuBar();
 		setJMenuBar(bar);
+		
 		//Game Menu
 		JMenu game = new JMenu("Game");
+		
 		//Difficulty Submenu
 		JMenu difficulty = new JMenu("Difficulty");
 		JMenuItem easy = new JMenuItem("Easy");
 		JMenuItem medium = new JMenuItem("Medium");
 		JMenuItem hard = new JMenuItem("Hard");
+		
 		//Other Menu Items
 		JMenuItem reset = new JMenuItem("Reset");
 		JMenuItem exit = new JMenuItem("Exit");
+		
 		//Adding bars
 		bar.add(game);
+		
+		//Difficulties
 		game.add(difficulty);
 		difficulty.add(easy);
 		difficulty.add(medium);
 		difficulty.add(hard);
+		
 		game.addSeparator();
 		game.add(reset);
 		game.addSeparator();
 		game.add(exit);
+		
+		//ActionListeners
 		exit.addActionListener(this);
 		easy.addActionListener(this);
 		medium.addActionListener(this);
@@ -59,19 +69,19 @@ public class GUI extends JFrame implements ActionListener{
 	}
 	public void addButons(int width, int height)
 	{
+		//Main Panel - holds all other panels
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+		
+		//Restart Button - Panel 1
 		JPanel panel1 = new JPanel();
+		//ImageIcon smiley = new ImageIcon(this.getClass().getResource("Images/smileyFace.png"));
+		JButton smileyRestart = new JButton("Restart");
+		panel1.add(smileyRestart);
+		mainPanel.add(panel1);
 		
-		//Restart Button
-		ImageIcon smiley = new ImageIcon(this.getClass().getResource("Images/smileyFace.jpg"));
-		JButton smileyRestart = new JButton(smiley);
-		smileyRestart.setBounds(250,20,91,91);
-		smileyRestart.setBackground(Color.WHITE);
-		
-		panel1.add(smileyRestart,BorderLayout.CENTER);
-		add(panel1);
-		
+		//Make Board - Panel 2
 		JPanel panel2 = new JPanel(new GridLayout(width,height));
-		//Make Board
 		JButton Butons[][] = new JButton[height][width];
 		for (int i = 0; i < Butons.length; i++)
 		{
@@ -82,7 +92,10 @@ public class GUI extends JFrame implements ActionListener{
 				panel2.add(Butons[i][j]);
 			}
 		}
-		add(panel2);
+		mainPanel.add(panel2);
+		
+		//Add mainPanel to JFrame
+		add(mainPanel);
 	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
