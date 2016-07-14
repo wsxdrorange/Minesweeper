@@ -32,19 +32,19 @@ public class Board {
 	{
 		if (this.difficulty.equals("Test"))
 		{
-			return 10;
+			return 6;
 		}
 		if (this.difficulty.equals("Easy"))
 		{
-			return 40;
+			return 10;
 		}
 		else if (this.difficulty.equals("Medium"))
 		{
-			return 100;
+			return 40;
 		}
 		else if (this.difficulty.equals("Hard"))
 		{
-			return 200;
+			return 99;
 		}
 		else
 		{
@@ -96,22 +96,27 @@ public class Board {
 	public void setBoardDifficulty(String difficulty, GUI game)
 	{
 		this.difficulty = difficulty;
+		if (this.difficulty.equals("Test"))
+		{
+			this.width = 5;
+			this.height = 5;
+		}
 		if (this.difficulty.equals("Easy"))
 		{
-			this.width = 20;
-			this.height = 20;
+			this.width = 9;
+			this.height = 9;
 			//Set GUI size
 		}
 		else if (this.difficulty.equals("Medium"))
 		{
-			this.width = 50;
-			this.height = 50;
+			this.width = 16;
+			this.height = 16;
 			//Set GUI size
 		}
 		else if (this.difficulty.equals("Hard"))
 		{
-			this.width = 100;
-			this.height = 100;
+			this.width = 16;
+			this.height = 30;
 			//Set GUI size
 		}
 	}
