@@ -6,6 +6,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 
+import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -108,7 +109,7 @@ public class GUI extends JFrame implements ActionListener{
 		for (int i = 0; i < Butons.length; i++) {
 			for (int j = 0; j < Butons[0].length; j++) {
 				Butons[i][j] = new JButton();
-				Butons[i][j].addActionListener(this);
+				Butons[i][j].addActionListener(this);;
 				Butons[i][j].addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent e)
 					{
@@ -157,7 +158,7 @@ public class GUI extends JFrame implements ActionListener{
     }
 	public void checkWin() {
         if (this.cellsChecked + this.bombs == (BOARD_HEIGHT * BOARD_WIDTH)) {
-            JFrame winningFrame = new JFrame();
+            final JFrame winningFrame = new JFrame();
             winningFrame.setSize(300,200);
             winningFrame.setResizable(false);
 
@@ -167,9 +168,18 @@ public class GUI extends JFrame implements ActionListener{
             winningPanel.setLayout(new BorderLayout());
 
             //Win text
-            JButton win = new JButton("You Win!");
+            JButton win = new JButton(new AbstractAction("You Win!") {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					winningFrame.dispose();
+					
+				}
+			});
+            win.setActionCommand("Win");
             winningPanel.add(win, BorderLayout.CENTER);
-
+            
             //add panel to winFrame and set Visible
             winningFrame.add(winningPanel);
             winningFrame.setVisible(true);
@@ -271,6 +281,7 @@ public class GUI extends JFrame implements ActionListener{
 		}
 		if (!(playingBoard[i][j].isBomb()))
 		{
+			this.cellsChecked++;
 			playingBoard[i][j].setRevealed(true);
 			Butons[i][j].setIcon(getMinesweeperImageIcon(playingBoard[i][j].toString()));
 			recursiveCellOpener(i, j);
@@ -287,7 +298,7 @@ public class GUI extends JFrame implements ActionListener{
 			for (int j = 0; j < BOARD_WIDTH; j++) {
 				if (arg0.getSource().equals(Butons[i][j])) {
 					Butons[i][j].removeActionListener(this);
-					if (playingBoard[i][j].toString().equals("-1"))
+					if (playingBoard[i][j].isBomb())
 					{
 						Butons[i][j].setIcon(getMinesweeperImageIcon(playingBoard[i][j].toString()));
 						revealAllBombs();
@@ -296,14 +307,12 @@ public class GUI extends JFrame implements ActionListener{
 					else
 					{
 						Butons[i][j].setIcon(getMinesweeperImageIcon(playingBoard[i][j].toString()));
+						playingBoard[i][j].setRevealed(true);
 						recursiveCellOpener(i,j);
-						break;
+						this.cellsChecked++;
+						checkWin();
 					}
-                    if (checked[i][j] == false) {
-                        this.cellsChecked++;
-                        checkWin();
-                        break;
-                    }
+					break;
 				}
 			}
 		}
@@ -324,7 +333,7 @@ public class GUI extends JFrame implements ActionListener{
 			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 			Board test = new Board("Hard");
 			setDefaultCloseOperation(3);
-		} else if (arg0.getActionCommand().equals("Reset") || arg0.getActionCommand().equals("SmileyRestart")) {
+		} else if (arg0.getActionCommand().equals("Reset") || arg0.getActionCommand().equals("SmileyRestart") || arg0.getActionCommand().equals("Win")) {
 			setDefaultCloseOperation(HIDE_ON_CLOSE);
 			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 			Board test = new Board(this.difficulty);
