@@ -1,6 +1,6 @@
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -14,7 +14,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
-import javax.swing.border.Border;
 
 public class GUI extends JFrame implements ActionListener {
 	private String difficulty;
@@ -91,8 +90,8 @@ public class GUI extends JFrame implements ActionListener {
 		//Restart Button - Panel 1
 		JPanel panel1 = new JPanel();
 
-		//ImageIcon smiley = new ImageIcon(this.getClass().getResource("Images/smileyFaceSmaller.png"));
-		JButton smileyRestart = new JButton("Restart");
+		ImageIcon smiley = new ImageIcon(this.getClass().getResource("Images/smileyFaceSmaller.png"));
+		JButton smileyRestart = new JButton(smiley);
 		smileyRestart.addActionListener(this);
 		smileyRestart.setActionCommand("SmileyRestart");
 		panel1.setLayout(new BoxLayout(panel1, BoxLayout.X_AXIS));
@@ -145,6 +144,65 @@ public class GUI extends JFrame implements ActionListener {
             winningFrame.setVisible(true);
         }
     }
+	public void revealAllBombs()
+	{
+		for (int i = 0; i < BOARD_HEIGHT; i++)
+		{
+			for (int j = 0; j < BOARD_WIDTH; j++)
+			{
+				if (playingBoard[i][j].toString().equals("-1"))
+				{
+					Butons[i][j].setText(playingBoard[i][j].toString());
+				}
+			}
+		}
+	}
+	public void removeAllButton()
+	{
+		for (int i = 0; i < BOARD_HEIGHT; i++)
+		{
+			for (int j = 0; j < BOARD_WIDTH; j++)
+			{
+				Butons[i][j].removeActionListener(this);
+			}
+		}
+	}
+	public void recursiveCellOpener(int i, int j)
+	{
+		if (playingBoard[i][j].toString().equals("0"))
+		{
+			revealCell(i-1,j-1);
+			revealCell(i-1,j);
+			revealCell(i-1,j+1);
+			revealCell(i+1,j);
+			
+			revealCell(i,j-1);
+			revealCell(i,j+1);
+			revealCell(i+1,j-1);
+			revealCell(i+1,j+1);
+		}
+	}
+	public void revealCell(int i, int j)
+	{
+		if (i < 0 || i >= playingBoard.length || j < 0 || j >= playingBoard[0].length)
+		{
+			return;
+		}
+		if (playingBoard[i][j].isRevealed())
+		{
+			return;
+		}
+		if (!(playingBoard[i][j].isBomb()))
+		{
+			playingBoard[i][j].setRevealed(true);
+			Butons[i][j].setText(playingBoard[i][j].toString());
+			recursiveCellOpener(i, j);
+		}
+		else
+		{
+			playingBoard[i][j].setRevealed(true);
+		}
+	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
@@ -152,10 +210,22 @@ public class GUI extends JFrame implements ActionListener {
 			for (int j = 0; j < BOARD_WIDTH; j++) {
 				if (arg0.getSource().equals(Butons[i][j])) {
 					Butons[i][j].removeActionListener(this);
-					Butons[i][j].setText(playingBoard[i][j].toString());
+					if (playingBoard[i][j].toString().equals("-1"))
+					{
+						Butons[i][j].setText(playingBoard[i][j].toString());
+						revealAllBombs();
+						removeAllButton();
+					}
+					else
+					{
+						Butons[i][j].setText(playingBoard[i][j].toString());
+						recursiveCellOpener(i,j);
+						break;
+					}
                     if (checked[i][j] == false) {
                         this.cellsChecked++;
                         checkWin();
+                        break;
                     }
 				}
 			}
