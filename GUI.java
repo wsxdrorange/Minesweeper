@@ -40,7 +40,7 @@ public class GUI extends JFrame implements ActionListener{
 		super("Minesweeper by Rick");
 		this.difficulty = difficulty;
 		setSize(600, 600);
-		setResizable(true);
+		setResizable(false);
 		createJMenuBar();
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
@@ -130,7 +130,7 @@ public class GUI extends JFrame implements ActionListener{
 									{
 										if (pressed[k][l] == false)
 										{
-											Butons[k][l].setIcon(new ImageIcon(this.getClass().getResource("Images/Flag.png")));
+											Butons[k][l].setIcon(getResizedImageIcon(new ImageIcon(this.getClass().getResource("Images/Flag.png"))));
 											pressed[k][l] = true;
 										}
 										else
@@ -162,7 +162,7 @@ public class GUI extends JFrame implements ActionListener{
 //						{
 //							size.height = -1;
 //						}
-//						Image scaled = master.getScaledInstance(size.width, size.height, java.awt.Image.SCALE_SMOOTH);
+//						Image scaled = Butons[i][j].getScaledInstance(size.width, size.height, java.awt.Image.SCALE_SMOOTH);
 //						btn.setIcon(new ImageIcon(scaled));
 //
 //					}
@@ -206,7 +206,7 @@ public class GUI extends JFrame implements ActionListener{
 
 				}
 			});
-			ImageIcon winner = new ImageIcon(this.getClass().getResource("Images/You Win 2.png"));
+			ImageIcon winner = new ImageIcon(this.getClass().getResource("Images/You Win.png"));
 			win.setIcon(winner);
 			win.setActionCommand("Win");
 			winningPanel.add(win, BorderLayout.CENTER);
@@ -224,7 +224,7 @@ public class GUI extends JFrame implements ActionListener{
 			{
 				if (playingBoard[i][j].toString().equals("-1"))
 				{
-					Butons[i][j].setIcon(getMinesweeperImageIcon(playingBoard[i][j].toString()));
+					Butons[i][j].setIcon(getResizedImageIcon(getMinesweeperImageIcon(playingBoard[i][j].toString())));
 				}
 			}
 		}
@@ -313,9 +313,8 @@ public class GUI extends JFrame implements ActionListener{
 		if (!(playingBoard[i][j].isBomb()))
 		{
 			this.cellsChecked++;
-			System.out.println(cellsChecked);
 			playingBoard[i][j].setRevealed(true);
-			Butons[i][j].setIcon(getMinesweeperImageIcon(playingBoard[i][j].toString()));
+			Butons[i][j].setIcon(getResizedImageIcon(getMinesweeperImageIcon(playingBoard[i][j].toString())));
 			recursiveCellOpener(i, j);
 		}
 		else
@@ -326,7 +325,22 @@ public class GUI extends JFrame implements ActionListener{
 	public ImageIcon getResizedImageIcon(ImageIcon ii)
 	{
 		Image i = ii.getImage();
-		i = i.getScaledInstance(i.getWidth(null)/2, i.getHeight(null)/2, Image.SCALE_SMOOTH);
+		if (difficulty.equals("Hard"))
+		{
+			i = i.getScaledInstance(i.getWidth(null)/6,i.getHeight(null)/6, Image.SCALE_SMOOTH);
+		}
+		else if (difficulty.equals("Easy"))
+		{
+			i = i.getScaledInstance(i.getWidth(null)/2, i.getHeight(null)/2, Image.SCALE_SMOOTH);
+		}
+		else if (difficulty.equals("Medium"))
+		{
+			i = i.getScaledInstance(i.getWidth(null)/4, i.getHeight(null)/4, Image.SCALE_SMOOTH);
+		}
+		else
+		{
+			i = i.getScaledInstance(i.getWidth(null), i.getHeight(null), Image.SCALE_SMOOTH);
+		}
 		ii.setImage(i);
 		return ii;
 	}
@@ -339,7 +353,7 @@ public class GUI extends JFrame implements ActionListener{
 					Butons[i][j].removeActionListener(this);
 					if (playingBoard[i][j].isBomb())
 					{
-						Butons[i][j].setIcon(getMinesweeperImageIcon(playingBoard[i][j].toString()));
+						Butons[i][j].setIcon(getResizedImageIcon(getMinesweeperImageIcon(playingBoard[i][j].toString())));
 						revealAllBombs();
 						removeAllButton();
 					}
@@ -347,11 +361,10 @@ public class GUI extends JFrame implements ActionListener{
 					{
 						if (!playingBoard[i][j].isRevealed())
 						{
-							Butons[i][j].setIcon(getMinesweeperImageIcon(playingBoard[i][j].toString()));
+							Butons[i][j].setIcon(getResizedImageIcon(getMinesweeperImageIcon(playingBoard[i][j].toString())));
 							playingBoard[i][j].setRevealed(true);
 							recursiveCellOpener(i,j);
 							this.cellsChecked++;
-							System.out.println(cellsChecked);
 							checkWin();
 						}
 					}
