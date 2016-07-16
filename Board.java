@@ -31,6 +31,7 @@ public class Board {
 		game.createCheckedBoard(this.checked);
 		game.addButons(width, height);
 		game.createPlayingBoard(playingBoard);
+		game.createBombCount(this.bombs);
 		game.setVisible(true);
 	}
 
@@ -39,7 +40,7 @@ public class Board {
 	}
 	public int getBombCount() {
 		if (this.difficulty.equals("Test")) {
-			return 6;
+			return 5;
 		}
 		if (this.difficulty.equals("Easy")) {
 			return 10;
