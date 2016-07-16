@@ -1,10 +1,16 @@
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
@@ -26,6 +32,7 @@ public class GUI extends JFrame implements ActionListener{
 	private int cellsChecked;
     private boolean checked [][];
     private boolean pressed [][];
+    private Image master;
 	Cell playingBoard[][];
 	JButton Butons[][];
 
@@ -109,7 +116,7 @@ public class GUI extends JFrame implements ActionListener{
 		for (int i = 0; i < Butons.length; i++) {
 			for (int j = 0; j < Butons[0].length; j++) {
 				Butons[i][j] = new JButton();
-				Butons[i][j].addActionListener(this);;
+				Butons[i][j].addActionListener(this);
 				Butons[i][j].addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent e)
 					{
@@ -117,7 +124,7 @@ public class GUI extends JFrame implements ActionListener{
 						{
 							for (int l = 0; l < BOARD_WIDTH; l++)
 							{
-								if (e.getSource().equals(Butons[k][l]))
+								if (e.getSource().equals(Butons[k][l]) && playingBoard[k][l].isRevealed() == false)
 								{
 									if (SwingUtilities.isRightMouseButton(e))
 									{
@@ -137,6 +144,28 @@ public class GUI extends JFrame implements ActionListener{
 						}
 					}
 				});
+//				Butons[i][j].addComponentListener(new ComponentAdapter() {
+//					@Override
+//					public void componentResized(ComponentEvent e) {
+//						// TODO Auto-generated method stub
+//						JButton btn = (JButton)e.getComponent();
+//						Dimension size = btn.getSize();
+//						Insets insets = btn.getInsets();
+//						size.width -= insets.left + insets.right;
+//						size.height -= insets.top + insets.bottom;
+//						if (size.width > size.height)
+//						{
+//							size.width = -1;
+//						}
+//						else
+//						{
+//							size.height = -1;
+//						}
+//						Image scaled = master.getScaledInstance(size.width, size.height, java.awt.Image.SCALE_SMOOTH);
+//						btn.setIcon(new ImageIcon(scaled));
+//						
+//					}
+//				});
 				panel2.add(Butons[i][j]);
 			}
 		}
@@ -158,7 +187,7 @@ public class GUI extends JFrame implements ActionListener{
     }
 	public void checkWin() {
         if (this.cellsChecked + this.bombs == (BOARD_HEIGHT * BOARD_WIDTH)) {
-            final JFrame winningFrame = new JFrame();
+            JFrame winningFrame = new JFrame();
             winningFrame.setSize(300,200);
             winningFrame.setResizable(false);
 
@@ -290,6 +319,13 @@ public class GUI extends JFrame implements ActionListener{
 		{
 			playingBoard[i][j].setRevealed(true);
 		}
+	}
+	public ImageIcon getResizedImageIcon(ImageIcon ii)
+	{
+		Image i = ii.getImage();
+		i = i.getScaledInstance(i.getWidth(null)/2, i.getHeight(null)/2, Image.SCALE_SMOOTH);
+		ii.setImage(i);
+		return ii;
 	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
