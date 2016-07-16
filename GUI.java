@@ -30,9 +30,9 @@ public class GUI extends JFrame implements ActionListener{
 	private int BOARD_WIDTH;
 	private int bombs;
 	private int cellsChecked;
-    private boolean checked [][];
-    private boolean pressed [][];
-    private Image master;
+	private boolean checked [][];
+	private boolean pressed [][];
+	private Image master;
 	Cell playingBoard[][];
 	JButton Butons[][];
 
@@ -91,7 +91,7 @@ public class GUI extends JFrame implements ActionListener{
 	}
 	public void addButons(int width, int height) {
 		pressed = new boolean[height][width];
-		
+
 		this.BOARD_WIDTH = width;
 		this.BOARD_HEIGHT = height;
 
@@ -133,12 +133,13 @@ public class GUI extends JFrame implements ActionListener{
 											Butons[k][l].setIcon(new ImageIcon(this.getClass().getResource("Images/Flag.png")));
 											pressed[k][l] = true;
 										}
-										else 
+										else
 										{
 											Butons[k][l].setIcon(null);
 											pressed[k][l] = false;
 										}
 									}
+									break;
 								}
 							}
 						}
@@ -163,7 +164,7 @@ public class GUI extends JFrame implements ActionListener{
 //						}
 //						Image scaled = master.getScaledInstance(size.width, size.height, java.awt.Image.SCALE_SMOOTH);
 //						btn.setIcon(new ImageIcon(scaled));
-//						
+//
 //					}
 //				});
 				panel2.add(Butons[i][j]);
@@ -181,39 +182,40 @@ public class GUI extends JFrame implements ActionListener{
 	public void createBombCount(int bombs) {
 		this.bombs = bombs;
 	}
-    public void createCheckedBoard(boolean [][] checked)
-    {
-        this.checked = checked;
-    }
+	public void createCheckedBoard(boolean [][] checked)
+	{
+		this.checked = checked;
+	}
 	public void checkWin() {
-        if (this.cellsChecked + this.bombs == (BOARD_HEIGHT * BOARD_WIDTH)) {
-            JFrame winningFrame = new JFrame();
-            winningFrame.setSize(300,200);
-            winningFrame.setResizable(false);
+		if (this.cellsChecked + this.bombs == (BOARD_HEIGHT * BOARD_WIDTH)) {
+			JFrame winningFrame = new JFrame();
+			winningFrame.setSize(300,200);
+			winningFrame.setResizable(false);
 
 
-            //Panel to add to frame
-            JPanel winningPanel = new JPanel();
-            winningPanel.setLayout(new BorderLayout());
+			//Panel to add to frame
+			JPanel winningPanel = new JPanel();
+			winningPanel.setLayout(new BorderLayout());
 
-            //Win text
-            JButton win = new JButton(new AbstractAction("You Win!") {
-				
+			//Win text
+			JButton win = new JButton(new AbstractAction("You Win!") {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
 					winningFrame.dispose();
-					
+
 				}
 			});
-            win.setActionCommand("Win");
-            winningPanel.add(win, BorderLayout.CENTER);
-            
-            //add panel to winFrame and set Visible
-            winningFrame.add(winningPanel);
-            winningFrame.setVisible(true);
-        }
-    }
+			ImageIcon winner = new ImageIcon(this.getClass().getResource("Images/You Win 2.png"));
+			win.setIcon(winner);
+			win.setActionCommand("Win");
+			winningPanel.add(win, BorderLayout.CENTER);
+
+			//add panel to winFrame and set Visible
+			winningFrame.add(winningPanel);
+			winningFrame.setVisible(true);
+		}
+	}
 	public void revealAllBombs()
 	{
 		for (int i = 0; i < BOARD_HEIGHT; i++)
@@ -241,7 +243,7 @@ public class GUI extends JFrame implements ActionListener{
 	{
 		switch (number)
 		{
-			case "-1": 
+			case "-1":
 			{
 				return new ImageIcon(this.getClass().getResource("Images/Bomb.png"));
 			}
@@ -291,7 +293,7 @@ public class GUI extends JFrame implements ActionListener{
 			revealCell(i-1,j);
 			revealCell(i-1,j+1);
 			revealCell(i+1,j);
-			
+
 			revealCell(i,j-1);
 			revealCell(i,j+1);
 			revealCell(i+1,j-1);
@@ -311,6 +313,7 @@ public class GUI extends JFrame implements ActionListener{
 		if (!(playingBoard[i][j].isBomb()))
 		{
 			this.cellsChecked++;
+			System.out.println(cellsChecked);
 			playingBoard[i][j].setRevealed(true);
 			Butons[i][j].setIcon(getMinesweeperImageIcon(playingBoard[i][j].toString()));
 			recursiveCellOpener(i, j);
@@ -342,11 +345,15 @@ public class GUI extends JFrame implements ActionListener{
 					}
 					else
 					{
-						Butons[i][j].setIcon(getMinesweeperImageIcon(playingBoard[i][j].toString()));
-						playingBoard[i][j].setRevealed(true);
-						recursiveCellOpener(i,j);
-						this.cellsChecked++;
-						checkWin();
+						if (!playingBoard[i][j].isRevealed())
+						{
+							Butons[i][j].setIcon(getMinesweeperImageIcon(playingBoard[i][j].toString()));
+							playingBoard[i][j].setRevealed(true);
+							recursiveCellOpener(i,j);
+							this.cellsChecked++;
+							System.out.println(cellsChecked);
+							checkWin();
+						}
 					}
 					break;
 				}
